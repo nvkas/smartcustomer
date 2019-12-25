@@ -5,7 +5,7 @@
 package core
 
 import (
-	"smartcustomer/utils"
+	"github.com/lukebryanshehao/smartcustomer/utils"
 	"sync"
 	"time"
 )
