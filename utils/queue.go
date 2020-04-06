@@ -41,6 +41,13 @@ func (q *Queue) IsEmpty() bool  {
 	return len(q.Items) == 0
 }
 
+// 队列置为空
+func (q *Queue) ToEmpty() {
+	mutex.Lock()
+	defer mutex.Unlock()
+	q.Items = []Item{}
+}
+
 // 队列长度
 func (q *Queue) Size() int  {
 	return len(q.Items)
