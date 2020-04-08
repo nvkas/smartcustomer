@@ -22,6 +22,9 @@ func main() {
 	//		i ++
 	//		smartCustomer.AddDataQueue(i)
 	//		time.Sleep(time.Second*1)
+	//		if i == 30 {
+	//			smartCustomer.Stop()
+	//		}
 	//	}
 	//}()
 	//
@@ -41,7 +44,6 @@ func main() {
 
 	var err error
 	err = cleverCustomer.NewClever("wxid_1",1)
-	err = cleverCustomer.NewClever("wxid_2",1)
 	if err != nil {
 		log.Println(err)
 	}
@@ -50,7 +52,7 @@ func main() {
 
 	go func() {
 		time.Sleep(time.Second*30)
-		cleverCustomer.DestroyClever("wxid_1")
+		cleverCustomer.Destroy("wxid_1")
 	}()
 
 	go func() {
@@ -59,7 +61,6 @@ func main() {
 			i ++
 			cleverCustomer.AddSmartData("wxid_1","这是wxid_1---"+cast.ToString(i))
 			time.Sleep(time.Second*1)
-			fmt.Println("smart data size: ",cleverCustomer.GetSmartDataSize("wxid_1"))
 		}
 	}()
 	select {

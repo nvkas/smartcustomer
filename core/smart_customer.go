@@ -5,6 +5,7 @@
 package core
 
 import (
+	"github.com/spf13/cast"
 	"smartcustomer/utils"
 	"sync"
 	"time"
@@ -33,6 +34,12 @@ func NewSmartCustomer(maxRunCount int,f func(interface{})) SmartCustomer {
 
 	return smartCustomer
 }
+
+func (s *SmartCustomer)Stop() {
+	s.DataQueue.ToEmpty()
+	s.AddDataQueue("stopSmartCustomer")
+}
+
 //添加数据至队列(数据入口)
 func (s *SmartCustomer)AddDataQueue(data interface{}) {
 	s.Mutex.Lock()
@@ -63,6 +70,10 @@ func (s *SmartCustomer)queueCustomer() {
 	wg := sync.WaitGroup{}
 	for {
 		data := s.getDataQueue()
+
+		if cast.ToString(data) == "stopSmartCustomer" {
+			return
+		}
 
 		ch <- 1
 		wg.Add(1)

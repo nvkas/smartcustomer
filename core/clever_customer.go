@@ -9,13 +9,13 @@ import (
 	"sync"
 )
 
-//场景：动态多线程()，每个线程为自定义数量线程
+//场景：动态多Clever()，每个Clever为自定义数量并发
 type CleverCustomer struct {
 	MaxUseCount int			//最大容量
 	Mutex sync.Mutex		//锁
 	TimeOut int	//超时不用销毁，0表示不销毁，单位：秒
 	Func func(interface{})	//自定义消费方法
-	CleversMap map[string]SmartCustomer	//线程池
+	CleversMap map[string]SmartCustomer	//Clever池
 }
 
 //新建并发协程
@@ -38,7 +38,7 @@ func NewCleverCustomer(maxUseCount,timeOut int,f func(interface{})) CleverCustom
 }
 
 
-//新增线程
+//新增Clever,默认单Clever
 func (c *CleverCustomer)NewClever(key string,smartRunCount int) error {
 	c.Mutex.Lock()
 	defer c.Mutex.Unlock()
@@ -47,7 +47,7 @@ func (c *CleverCustomer)NewClever(key string,smartRunCount int) error {
 		return errors.New("can not add more clever")
 	}
 	
-	//默认单线程
+	//默认单Clever
 	if smartRunCount <= 0 {
 		smartRunCount = 1
 	}
@@ -57,7 +57,7 @@ func (c *CleverCustomer)NewClever(key string,smartRunCount int) error {
 	return nil
 }
 
-////获取线程
+////获取Clever
 //func (c *CleverCustomer)GetCleverSmart(key string) SmartCustomer {
 //	c.Mutex.Lock()
 //	defer c.Mutex.Unlock()
@@ -65,22 +65,18 @@ func (c *CleverCustomer)NewClever(key string,smartRunCount int) error {
 //	return c.CleversMap[key]
 //}
 
-//销毁增线程
-func (c *CleverCustomer)DestroyClever(key string) {
+//销毁增Clever
+func (c *CleverCustomer)Destroy(key string) {
 	c.Mutex.Lock()
 	defer c.Mutex.Unlock()
 	if _,ok := c.CleversMap[key];ok {
-		for {
-			data := c.CleversMap[key].DataQueue.Dequeue()
-			if data == nil {
-				break
-			}
-		}
+		smart := c.CleversMap[key]
+		smart.Stop()
 		delete(c.CleversMap, key)
 	}
 }
 
-//获取线程数量
+//获取Clever数量
 func (c *CleverCustomer)GetCleverSize() int {
 	//c.Mutex.Lock()
 	//defer c.Mutex.Unlock()

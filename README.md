@@ -16,6 +16,34 @@
             smartCustomer.AddDataQueue(i)
             time.Sleep(time.Second*1)
         }
+        
+        
+        cleverCustomer := core.NewCleverCustomer(10,0,PrintData)
+        
+        var err error
+        err = cleverCustomer.NewClever("no_1",1)
+        if err != nil {
+            log.Println(err)
+        }
+    
+        fmt.Println("size: ",cleverCustomer.GetCleverSize())
+    
+        go func() {
+            time.Sleep(time.Second*30)
+            cleverCustomer.Destroy("no_1")
+        }()
+    
+        go func() {
+            i := 0
+            for {
+                i ++
+                cleverCustomer.AddSmartData("no_1","这是no_1---"+cast.ToString(i))
+                time.Sleep(time.Second*1)
+            }
+        }()
+        select {
+    
+        }
 
     }
 
