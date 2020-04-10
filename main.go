@@ -13,6 +13,22 @@ import (
 )
 
 func main() {
+	//计数器
+	//counter := utils.NewCounter()
+	//
+	//go func() {
+	//	time.Sleep(time.Second * 15)
+	//	counter.ReStart()
+	//	time.Sleep(time.Second * 15)
+	//	counter.Stop()
+	//}()
+	//
+	//for {
+	//	fmt.Println("count: ",counter.Count)
+	//	time.Sleep(time.Second * 1)
+	//}
+
+	//单方法并发
 	//smartCustomer := core.NewSmartCustomer(3,PrintData)
 	//smartCustomer2 := core.NewSmartCustomer(2,PrintData)
 	//
@@ -40,27 +56,31 @@ func main() {
 	//
 	//}
 
+	//Clever
 	cleverCustomer := core.NewCleverCustomer(10,0,PrintData)
 
 	var err error
-	err = cleverCustomer.NewClever("wxid_1",1)
+	err = cleverCustomer.NewClever("no_1",1)
 	if err != nil {
 		log.Println(err)
 	}
 
 	fmt.Println("size: ",cleverCustomer.GetCleverSize())
 
-	go func() {
-		time.Sleep(time.Second*30)
-		cleverCustomer.Destroy("wxid_1")
-	}()
+	//go func() {
+	//	time.Sleep(time.Second*30)
+	//	cleverCustomer.Destroy("wxid_1")
+	//}()
 
 	go func() {
 		i := 0
 		for {
 			i ++
-			cleverCustomer.AddSmartData("wxid_1","这是wxid_1---"+cast.ToString(i))
+			cleverCustomer.AddSmartData("no_1","这是no_1---"+cast.ToString(i))
 			time.Sleep(time.Second*1)
+			if i == 5 {
+				time.Sleep(time.Second*12)
+			}
 		}
 	}()
 	select {
@@ -71,5 +91,5 @@ func main() {
 
 func PrintData(data interface{})  {
 	fmt.Println(data)
-	time.Sleep(time.Second*3)
+	//time.Sleep(time.Second*3)
 }

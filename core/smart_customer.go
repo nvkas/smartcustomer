@@ -89,7 +89,7 @@ func (s *SmartCustomer)dataCustomer(wg *sync.WaitGroup, ch chan int, data interf
 	}()
 
 	if data == nil {
-		time.Sleep(time.Second * 3)
+		time.Sleep(time.Second * 1)
 		return
 	}
 
