@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"github.com/spf13/cast"
 	"log"
-	"smartcustomer/core"
+	"github.com/lukebryanshehao/core"
 	"time"
 )
 
