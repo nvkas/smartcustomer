@@ -6,7 +6,7 @@ package core
 
 import (
 	"github.com/spf13/cast"
-	"github.com/lukebryanshehao/smartcustomer/utils"
+	"smartcustomer/utils"
 	"sync"
 	"time"
 )

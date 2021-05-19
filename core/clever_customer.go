@@ -6,7 +6,7 @@ package core
 
 import (
 	"errors"
-	"github.com/lukebryanshehao/smartcustomer/utils"
+	"smartcustomer/utils"
 	"sync"
 	"time"
 )
