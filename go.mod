@@ -1,4 +1,4 @@
-module smartcustomer
+module github.com/lukebryanshehao/smartcustomer
 
 go 1.16
 

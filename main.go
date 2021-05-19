@@ -6,9 +6,9 @@ package main
 
 import (
 	"fmt"
+	"github.com/lukebryanshehao/smartcustomer/core"
 	"github.com/spf13/cast"
 	"log"
-	"smartcustomer/core"
 	"time"
 )
 
