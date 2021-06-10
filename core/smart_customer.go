@@ -61,8 +61,6 @@ func (s *SmartCustomer) getDataQueue() interface{} {
 
 //获取数据堆积量
 func (s *SmartCustomer) GetDataQueueSize() int {
-	s.Mutex.Lock()
-	defer s.Mutex.Unlock()
 	v := s.DataQueue.Size()
 	return v
 }
