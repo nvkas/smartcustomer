@@ -24,7 +24,7 @@ type CleverCustomer struct {
 //新建并发协程
 //maxRunCount 并发量
 //f 自定义消费方法
-func NewCleverCustomer(maxUseCount,timeOut int,f func(interface{})) *CleverCustomer {
+func NewCleverCustomer(maxUseCount,timeOut int,f func(interface{})) CleverCustomer {
 	cleverCustomer := CleverCustomer{}
 	if maxUseCount <= 0 {
 		maxUseCount = 10
@@ -44,7 +44,7 @@ func NewCleverCustomer(maxUseCount,timeOut int,f func(interface{})) *CleverCusto
 	maps2 := make(map[string]*utils.Counter)
 	cleverCustomer.CounterMaps = maps2
 
-	return &cleverCustomer
+	return cleverCustomer
 }
 
 
