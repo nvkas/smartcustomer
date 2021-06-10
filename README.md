@@ -18,32 +18,44 @@
         }
         
         
-        cleverCustomer := core.NewCleverCustomer(10,0,PrintData)
-        
+        //Clever
+        cleverCustomer := core.NewCleverCustomer(10, 0, PrintData)
+    
         var err error
-        err = cleverCustomer.NewClever("no_1",1)
+        err = cleverCustomer.NewClever("no_1", 1,nil)
+        if err != nil {
+            log.Println(err)
+        }
+        err = cleverCustomer.NewClever("no_2", 2,PrintData2)
         if err != nil {
             log.Println(err)
         }
     
-        fmt.Println("size: ",cleverCustomer.GetCleverSize())
-    
-        go func() {
-            time.Sleep(time.Second*30)
-            cleverCustomer.Destroy("no_1")
-        }()
+        fmt.Println("size: ", cleverCustomer.GetCleverSize())
     
         go func() {
             i := 0
             for {
                 i ++
-                cleverCustomer.AddSmartData("no_1","这是no_1---"+cast.ToString(i))
-                time.Sleep(time.Second*1)
+                cleverCustomer.AddSmartData("no_1", "这是no_1---"+cast.ToString(i))
+                time.Sleep(time.Second * 1)
+                if i == 5 {
+                    time.Sleep(time.Second * 12)
+                }
             }
         }()
-        select {
-    
-        }
+        go func() {
+            i := 0
+            for {
+                i ++
+                cleverCustomer.AddSmartData("no_2", "这是no_2---"+cast.ToString(i))
+                time.Sleep(time.Second * 1)
+                if i == 5 {
+                    time.Sleep(time.Second * 12)
+                }
+            }
+        }()
+        select {}
 
     }
 

@@ -71,11 +71,6 @@ func main() {
 
 	fmt.Println("size: ", cleverCustomer.GetCleverSize())
 
-	//go func() {
-	//	time.Sleep(time.Second*30)
-	//	cleverCustomer.Destroy("wxid_1")
-	//}()
-
 	go func() {
 		i := 0
 		for {
