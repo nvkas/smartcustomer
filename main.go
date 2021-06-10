@@ -60,7 +60,11 @@ func main() {
 	cleverCustomer := core.NewCleverCustomer(10, 0, PrintData)
 
 	var err error
-	err = cleverCustomer.NewClever("no_1", 1)
+	err = cleverCustomer.NewClever("no_1", 1,nil)
+	if err != nil {
+		log.Println(err)
+	}
+	err = cleverCustomer.NewClever("no_2", 2,PrintData2)
 	if err != nil {
 		log.Println(err)
 	}
@@ -83,11 +87,26 @@ func main() {
 			}
 		}
 	}()
+	go func() {
+		i := 0
+		for {
+			i ++
+			cleverCustomer.AddSmartData("no_2", "这是no_2---"+cast.ToString(i))
+			time.Sleep(time.Second * 1)
+			if i == 5 {
+				time.Sleep(time.Second * 12)
+			}
+		}
+	}()
 	select {}
 
 }
 
 func PrintData(data interface{}) {
 	fmt.Println(data)
+	//time.Sleep(time.Second*3)
+}
+func PrintData2(data interface{}) {
+	fmt.Println("data--",data)
 	//time.Sleep(time.Second*3)
 }

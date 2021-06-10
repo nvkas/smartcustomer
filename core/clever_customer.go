@@ -29,10 +29,10 @@ func NewCleverCustomer(maxUseCount,timeOut int,f func(interface{})) *CleverCusto
 	if maxUseCount <= 0 {
 		maxUseCount = 10
 	}
-
-	if timeOut <= 0 {
-		timeOut = 365 * 24 * 60 * 60
-	}
+	//
+	//if timeOut <= 0 {
+	//	timeOut = 365 * 24 * 60 * 60
+	//}
 
 	cleverCustomer.MaxUseCount = maxUseCount
 	cleverCustomer.TimeOut = timeOut
@@ -49,7 +49,7 @@ func NewCleverCustomer(maxUseCount,timeOut int,f func(interface{})) *CleverCusto
 
 
 //新增Clever,默认单Clever
-func (c *CleverCustomer)NewClever(key string,smartRunCount int) error {
+func (c *CleverCustomer)NewClever(key string,smartRunCount int,f func(interface{})) error {
 	c.Mutex.Lock()
 	defer c.Mutex.Unlock()
 
@@ -61,15 +61,19 @@ func (c *CleverCustomer)NewClever(key string,smartRunCount int) error {
 	if smartRunCount <= 0 {
 		smartRunCount = 1
 	}
-	
-	smartCustomer := NewSmartCustomer(smartRunCount,c.Func)
+	fun := c.Func
+	if f != nil {
+		fun = f
+	}
+	smartCustomer := NewSmartCustomer(smartRunCount,fun)
 	c.SmartMaps[key] = smartCustomer
 
 	counter := utils.NewCounter()
 	c.CounterMaps[key] = counter
 
-	go c.CheckTimeOut(key)
-
+	if c.TimeOut > 0 {
+		go c.CheckTimeOut(key)
+	}
 	return nil
 }
 
