@@ -11,10 +11,10 @@ import (
 )
 
 type SmartCustomers struct {
-	MaxRunCount     int                 //最大并发
-	MaxDataGetCount int                 //一次获取(处理)多少数据
-	DataQueue       *utils.Queue        //业务数据
-	Mutex           sync.Mutex          //锁
+	maxRunCount     int                 //最大并发
+	maxDataGetCount int                 //一次获取(处理)多少数据
+	dataQueue       *utils.Queue        //业务数据
+	mutex           sync.Mutex          //锁
 	Func            func([]interface{}) //自定义消费方法
 	runningFlag bool	//运行标志
 }
@@ -30,9 +30,9 @@ func NewSmartCustomers(maxRunCount, maxDataGetCount int, f func([]interface{})) 
 	if maxDataGetCount <= 0 {
 		maxDataGetCount = 1
 	}
-	smartCustomers.MaxRunCount = maxRunCount
-	smartCustomers.MaxDataGetCount = maxDataGetCount
-	smartCustomers.DataQueue = utils.NewQueue()
+	smartCustomers.maxRunCount = maxRunCount
+	smartCustomers.maxDataGetCount = maxDataGetCount
+	smartCustomers.dataQueue = utils.NewQueue()
 	smartCustomers.Func = f
 	smartCustomers.runningFlag = true
 
@@ -42,35 +42,35 @@ func NewSmartCustomers(maxRunCount, maxDataGetCount int, f func([]interface{})) 
 }
 
 func (s *SmartCustomers) Stop() {
-	s.DataQueue.ToEmpty()
+	s.dataQueue.ToEmpty()
 	s.runningFlag = false
 }
 
 //添加数据至队列(数据入口)
 func (s *SmartCustomers) AddDataQueues(datas []interface{}) {
-	s.Mutex.Lock()
-	defer s.Mutex.Unlock()
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
 	if !s.runningFlag {
 		return
 	}
 	for _, data := range datas {
-		s.DataQueue.Enqueue(data)
+		s.dataQueue.Enqueue(data)
 	}
 	return
 }
 
 //从队列拿数据
 func (s *SmartCustomers) getDataQueues() []interface{} {
-	s.Mutex.Lock()
-	defer s.Mutex.Unlock()
-	getCount := s.MaxDataGetCount
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+	getCount := s.maxDataGetCount
 	dataSize := s.GetDataQueueSize()
 	if getCount > dataSize {
 		getCount = dataSize
 	}
 	var datas []interface{}
 	for i := 0; i < getCount; i++ {
-		data := s.DataQueue.Dequeue()
+		data := s.dataQueue.Dequeue()
 		if data == nil {
 			continue
 		}
@@ -82,13 +82,13 @@ func (s *SmartCustomers) getDataQueues() []interface{} {
 
 //获取数据堆积量
 func (s *SmartCustomers) GetDataQueueSize() int {
-	v := s.DataQueue.Size()
+	v := s.dataQueue.Size()
 	return v
 }
 
 //消费
 func (s *SmartCustomers) queueCustomer() {
-	ch := make(chan int, s.MaxRunCount)
+	ch := make(chan int, s.maxRunCount)
 	wg := sync.WaitGroup{}
 	for {
 		datas := s.getDataQueues()

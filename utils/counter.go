@@ -9,7 +9,7 @@ import (
 )
 
 type Counter struct {
-	StopFlag bool
+	stopFlag bool
 	Count int
 }
 
@@ -25,7 +25,7 @@ func (c *Counter)Start() {
 
 	for {
 
-		if c.StopFlag == true {
+		if c.stopFlag == true {
 			return
 		}
 
@@ -39,6 +39,10 @@ func (c *Counter)ReStart() {
 	c.Count = 0
 }
 
+func (c *Counter)GetCount() int {
+	return c.Count
+}
+
 func (c *Counter)Stop() {
-	c.StopFlag = true
+	c.stopFlag = true
 }

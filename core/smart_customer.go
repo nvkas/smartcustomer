@@ -12,9 +12,9 @@ import (
 )
 
 type SmartCustomer struct {
-	MaxRunCount int               //最大并发
-	DataQueue   *utils.Queue      //业务数据
-	Mutex       sync.Mutex        //锁
+	maxRunCount int               //最大并发
+	dataQueue   *utils.Queue      //业务数据
+	mutex       sync.Mutex        //锁
 	Func        func(interface{}) //自定义消费方法
 }
 
@@ -26,8 +26,8 @@ func NewSmartCustomer(maxRunCount int, f func(interface{})) SmartCustomer {
 	if maxRunCount <= 0 {
 		maxRunCount = 50
 	}
-	smartCustomer.MaxRunCount = maxRunCount
-	smartCustomer.DataQueue = utils.NewQueue()
+	smartCustomer.maxRunCount = maxRunCount
+	smartCustomer.dataQueue = utils.NewQueue()
 	smartCustomer.Func = f
 
 	go smartCustomer.queueCustomer()
@@ -36,23 +36,23 @@ func NewSmartCustomer(maxRunCount int, f func(interface{})) SmartCustomer {
 }
 
 func (s *SmartCustomer) Stop() {
-	s.DataQueue.ToEmpty()
+	s.dataQueue.ToEmpty()
 	s.AddDataQueue("stopSmartCustomer")
 }
 
 //添加数据至队列(数据入口)
 func (s *SmartCustomer) AddDataQueue(data interface{}) {
-	s.Mutex.Lock()
-	defer s.Mutex.Unlock()
-	s.DataQueue.Enqueue(data)
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+	s.dataQueue.Enqueue(data)
 	return
 }
 
 //从队列拿数据
 func (s *SmartCustomer) getDataQueue() interface{} {
-	s.Mutex.Lock()
-	defer s.Mutex.Unlock()
-	data := s.DataQueue.Dequeue()
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+	data := s.dataQueue.Dequeue()
 	if data == nil {
 		return nil
 	}
@@ -61,13 +61,13 @@ func (s *SmartCustomer) getDataQueue() interface{} {
 
 //获取数据堆积量
 func (s *SmartCustomer) GetDataQueueSize() int {
-	v := s.DataQueue.Size()
+	v := s.dataQueue.Size()
 	return v
 }
 
 //消费
 func (s *SmartCustomer) queueCustomer() {
-	ch := make(chan int, s.MaxRunCount)
+	ch := make(chan int, s.maxRunCount)
 	wg := sync.WaitGroup{}
 	for {
 		data := s.getDataQueue()
